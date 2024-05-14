@@ -1,27 +1,38 @@
-// pages/api/check404.js
-
-// Function to analyze HTML content for 404 errors
-function analyzeHtmlFor404(html) {
-  // Regular expression to find <a> tags with href attributes containing "404"
-  const regex = /<a\s+(?:[^>]*?\s+)?href=(["'])(.*?404.*?)\1/gi;
-  const matches = html.match(regex);
-  // Count the number of matches
-  return matches ? matches.length : 0;
-}
+// pages/api/checkLinks.js
+// import fetch from 'node-fetch';
+import cheerio from 'cheerio';
 
 export default async function handler(req, res) {
-    const { url } = req.query;
-    console.log(res);
-    try {
-      const response = await fetch(url);
-      const html = await response.text();
-      // Analyze HTML to count 404 errors (You'll need to implement this logic)
-      const errorCount = analyzeHtmlFor404(html);
-      console.log(errorCount);
-      res.status(200).json({ errorCount });
-    } catch (error) {
-      console.error('Error fetching website:', error);
-      res.status(500).json({ error: 'Error fetching website' });
+  const { url } = req.query;
+  try {
+    const response = await fetch(url);
+    const html = await response.text();
+    const linkStatus = await checkLinkStatus(html, url);
+    res.status(200).json({ linkStatus });
+  } catch (error) {
+    console.error('Error fetching website:', error);
+    res.status(500).json({ error: 'Error fetching website' });
+  }
+}
+
+async function checkLinkStatus(html, baseUrl) {
+  const $ = cheerio.load(html);
+  const links = $('a');
+  const linkStatus = {};
+  let countError = 0;
+
+  for (let i = 0; i < links.length; i++) {
+    const link = $(links[i]).attr('href');
+    if (link) {
+      const absoluteLink = new URL(link, baseUrl).href;
+      try {
+        const response = await fetch(absoluteLink, { method: 'HEAD' });
+        linkStatus[absoluteLink] = response.ok ? 'OK' : 'Not Found';
+      } catch (error) {
+        linkStatus[absoluteLink] = 'Error';
+      }
     }
   }
-  
+
+  return linkStatus;
+}

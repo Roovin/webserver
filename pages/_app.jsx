@@ -1,6 +1,6 @@
 import '../style/globals.css';
 import React from 'react'
-import Layout from '@/componets/Layout'
+import Layout from '@/components/Layout'
 
 export default function MyApp({ Component, pageProps }) {
     return (
