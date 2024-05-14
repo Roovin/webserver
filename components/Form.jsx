@@ -11,7 +11,8 @@ const URLForm = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await fetch(`/api/check404?url=${encodeURIComponent(url)}`);
+            const response = await fetch(`/api/checkStatus?url=${encodeURIComponent(url)}`);
+            console.log(response);
             const data = await response.json();
             setLinkStatus(data.linkStatus);
         } catch (error) {
