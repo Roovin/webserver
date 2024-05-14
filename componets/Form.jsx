@@ -9,14 +9,17 @@ const IndexPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+        // console.log(url);
+    //     const response = await fetch(url);
+    //   const html = await response.text();
       const response = await fetch(`/api/check404?url=${encodeURIComponent(url)}`);
       const data = await response.json();
+      console.log(data);
       setErrorCount(data.errorCount);
     } catch (error) {
       console.error('Error:', error);
     }
   };
-
   return (
     <div>
       <h1>Check 404 Pages</h1>
