@@ -5,13 +5,19 @@ import cheerio from 'cheerio';
 export default async function handler(req, res) {
   const { url } = req.query;
   // console.log(url);
+  const timeoutMs = 60000; // 60 seconds
+  const timer = setTimeout(() => {
+    res.status(500).json({ error: 'Timeout error: Function execution exceeded maximum time limit' });
+  }, timeoutMs);
   try {
+    clearTimeout(timer);
     const response = await fetch(url);
     // console.log(response);
     const html = await response.text();
     const linkStatus = await checkLinkStatus(html, url);
     res.status(200).json({ linkStatus });
   } catch (error) {
+    clearTimeout(timer);
     console.error('Error fetching website:', error);
     res.status(500).json({ error: 'Error fetching website' });
   }
