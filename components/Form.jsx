@@ -11,7 +11,14 @@ const URLForm = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await fetch(`/api/checkStatus?url=${encodeURIComponent(url)}`);
+            const timeoutMs = 1200000;
+            // const response = await fetch(`/api/checkStatus?url=${encodeURIComponent(url)}`);
+            const response = await Promise.race([
+                fetch(`/api/checkStatus?url=${encodeURIComponent(url)}`),
+                new Promise((resolve, reject) =>
+                  setTimeout(() => reject(new Error('Timeout')), timeoutMs)
+                )
+              ]);
             console.log(response);
             const data = await response.json();
             console.log(data.linkStatus);
