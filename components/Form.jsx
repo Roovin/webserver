@@ -11,14 +11,14 @@ const URLForm = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const timeoutMs = 1200000;
-            // const response = await fetch(`/api/checkStatus?url=${encodeURIComponent(url)}`);
-            const response = await Promise.race([
-                fetch(`/api/checkStatus?url=${encodeURIComponent(url)}`),
-                new Promise((resolve, reject) =>
-                  setTimeout(() => reject(new Error('Timeout')), timeoutMs)
-                )
-              ]);
+            // const timeoutMs = 1200000;
+            const response = await fetch(`/api/checkStatus?url=${encodeURIComponent(url)}`);
+            // const response = await Promise.race([
+            //     fetch(`/api/checkStatus?url=${encodeURIComponent(url)}`),
+            //     new Promise((resolve, reject) =>
+            //       setTimeout(() => reject(new Error('Timeout')), timeoutMs)
+            //     )
+            //   ]);
             console.log(response);
             const data = await response.json();
             console.log(data.linkStatus);
@@ -31,11 +31,12 @@ const URLForm = () => {
     return (
         <section className='py-[50px]'>
             <div className="container">
-                <div className=''>
+                <div className='brokenLinksWrap max-w-[1000px] mx-auto'>
+                    <h2></h2>
                     <form onSubmit={handleSubmit}>
                         <input
                             type="text"
-                            className='py-[10px] px-[14px] border-[1px] border-black'
+                            className='py-[10px] px-[14px] border-[1px] border-black max-w-[500px]'
                             value={url}
                             onChange={(e) => setUrl(e.target.value)}
                             placeholder="Enter website URL"
