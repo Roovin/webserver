@@ -5,7 +5,7 @@ import cheerio from 'cheerio';
 export default async function handler(req, res) {
   const { url } = req.query;
   // console.log(url);
-  const timeoutMs = 60000; // 60 seconds
+  const timeoutMs = 120000; // 60 seconds
   const timer = setTimeout(() => {
     res.status(500).json({ error: 'Timeout error: Function execution exceeded maximum time limit' });
   }, timeoutMs);

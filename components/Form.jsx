@@ -10,20 +10,22 @@ const URLForm = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        const timeoutMs = 120000; // 120 seconds
+        const timer = setTimeout(() => {
+            res.status(500).json({ error: 'Timeout error: Function execution exceeded maximum time limit' });
+        }, timeoutMs);
         try {
-            // const timeoutMs = 1200000;
+
             const response = await fetch(`/api/checkStatus?url=${encodeURIComponent(url)}`);
-            // const response = await Promise.race([
-            //     fetch(`/api/checkStatus?url=${encodeURIComponent(url)}`),
-            //     new Promise((resolve, reject) =>
-            //       setTimeout(() => reject(new Error('Timeout')), timeoutMs)
-            //     )
-            //   ]);
+
             console.log(response);
+           
             const data = await response.json();
+            clearTimeout(timer);
             console.log(data.linkStatus);
             setLinkStatus(data.linkStatus);
         } catch (error) {
+            clearTimeout(timer);
             console.error('Error:', error);
         }
     };
