@@ -4,8 +4,10 @@ import cheerio from 'cheerio';
 
 export default async function handler(req, res) {
   const { url } = req.query;
+  // console.log(url);
   try {
     const response = await fetch(url);
+    // console.log(response);
     const html = await response.text();
     const linkStatus = await checkLinkStatus(html, url);
     res.status(200).json({ linkStatus });
@@ -23,6 +25,7 @@ async function checkLinkStatus(html, baseUrl) {
 
   for (let i = 0; i < links.length; i++) {
     const link = $(links[i]).attr('href');
+    console.log(link);
     if (link) {
       const absoluteLink = new URL(link, baseUrl).href;
       try {
@@ -33,6 +36,6 @@ async function checkLinkStatus(html, baseUrl) {
       }
     }
   }
-
+  console.log(linkStatus);
   return linkStatus;
 }
